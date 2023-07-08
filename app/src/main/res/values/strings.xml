@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Movies Library</string>
+    <string name="title_genre_screen">List of official genres</string>
+    <string name="subtitle_genre_screen">Choose genre to see movies by genre</string>
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/genreFragment">
+
+    <fragment
+        android:id="@+id/genreFragment"
+        android:name="com.ryanrvldo.movieslibrary.ui.genres.GenreFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_genre" />
+
+</navigation>
