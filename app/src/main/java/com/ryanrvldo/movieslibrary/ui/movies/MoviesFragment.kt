@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,6 +51,14 @@ class MoviesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _concatAdapter = moviesPagingAdapter.withLoadStateFooter(loadStateAdapter)
+        moviesPagingAdapter.setOnNavigateToDetails {
+            findNavController().navigate(
+                MoviesFragmentDirections.actionMoviesToDetails(
+                    it.id,
+                    it.title
+                )
+            )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

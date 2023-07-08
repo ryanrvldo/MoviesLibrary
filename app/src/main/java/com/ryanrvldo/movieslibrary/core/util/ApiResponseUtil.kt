@@ -2,8 +2,10 @@ package com.ryanrvldo.movieslibrary.core.util
 
 import com.google.gson.Gson
 import com.ryanrvldo.movieslibrary.core.data.network.response.ErrorResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
@@ -29,4 +31,4 @@ fun <T> handleApiResponse(gson: Gson, apiCall: suspend () -> T) = flow {
             emit(Result.failure(exception))
         }
     }
-}
+}.flowOn(Dispatchers.IO)
