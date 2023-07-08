@@ -8,7 +8,24 @@
     <fragment
         android:id="@+id/genreFragment"
         android:name="com.ryanrvldo.movieslibrary.ui.genres.GenreFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_genre" />
+        android:label="Movie Genres"
+        tools:layout="@layout/fragment_genre">
+        <action
+            android:id="@+id/action_genre_to_movies"
+            app:destination="@id/moviesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/moviesFragment"
+        android:name="com.ryanrvldo.movieslibrary.ui.movies.MoviesFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_movies">
+        <argument
+            android:name="genreId"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

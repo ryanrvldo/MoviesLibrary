@@ -21,6 +21,12 @@ class GenreAdapter @Inject constructor() : ListAdapter<Genre, GenreAdapter.Genre
     }
 ) {
 
+    private var onNavigateToDetails: Function1<Genre, Unit>? = null
+
+    fun setOnNavigateToDetails(onNavigate: (Genre) -> Unit) {
+        onNavigateToDetails = onNavigate
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = GenreViewHolder(
         ItemGenreBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -37,6 +43,9 @@ class GenreAdapter @Inject constructor() : ListAdapter<Genre, GenreAdapter.Genre
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Genre) {
             binding.tvName.text = item.name
+            binding.root.setOnClickListener {
+                onNavigateToDetails?.invoke(item)
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.ryanrvldo.movieslibrary.BuildConfig
 import com.ryanrvldo.movieslibrary.core.data.network.config.AuthInterceptor
 import com.ryanrvldo.movieslibrary.core.data.network.service.GenreService
+import com.ryanrvldo.movieslibrary.core.data.network.service.MovieService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,4 +52,8 @@ class NetworkModule {
     @Provides
     @Singleton
     fun providesGenreService(retrofit: Retrofit): GenreService = retrofit.create()
+
+    @Provides
+    @Singleton
+    fun providesMovieService(retrofit: Retrofit): MovieService = retrofit.create()
 }

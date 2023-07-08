@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ryanrvldo.movieslibrary.databinding.FragmentGenreBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,6 +67,14 @@ class GenreFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        adapter.setOnNavigateToDetails {
+            findNavController().navigate(
+                GenreFragmentDirections.actionGenreToMovies(
+                    it.id,
+                    it.name
+                )
+            )
+        }
         binding.rvGenre.layoutManager = GridLayoutManager(context, 2)
         binding.rvGenre.adapter = adapter
     }

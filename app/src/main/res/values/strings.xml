@@ -2,4 +2,7 @@
     <string name="app_name">Movies Library</string>
     <string name="title_genre_screen">List of official genres</string>
     <string name="subtitle_genre_screen">Choose genre to see movies by genre</string>
+    <string name="movie_backdrop_content_desc">Movie Backdrop</string>
+    <string name="icon_rating_content_desc">Icon Rating</string>
+    <string name="title_retry">Retry</string>
 </resources>

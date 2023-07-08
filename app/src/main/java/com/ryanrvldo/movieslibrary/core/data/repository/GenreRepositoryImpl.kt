@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GenreRepositoryImpl @Inject constructor(
-    private val genreService: GenreService, private val gson: Gson
+    private val gson: Gson,
+    private val genreService: GenreService
 ) : GenreRepository {
 
     override fun getOfficialMovieGenreList(): Flow<Result<List<Genre>>> = handleApiResponse(gson) {
