@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface GenreRepository {
 
-   fun getOfficialMovieGenreList(): Flow<List<Genre>>
+   fun getOfficialMovieGenreList(): Flow<Result<List<Genre>>>
 
 }

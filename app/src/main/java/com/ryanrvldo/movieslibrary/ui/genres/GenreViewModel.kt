@@ -12,11 +12,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GenreViewModel @Inject constructor(
-    private val genreRepository: GenreRepository
+    genreRepository: GenreRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<GenreUiState> = genreRepository.getOfficialMovieGenreList()
-        .map { GenreUiState.Success(it) }
+        .map { result ->
+            if (result.isSuccess) {
+                GenreUiState.Success(result.getOrThrow())
+            } else {
+                GenreUiState.Error(result.exceptionOrNull()?.message.toString())
+            }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
