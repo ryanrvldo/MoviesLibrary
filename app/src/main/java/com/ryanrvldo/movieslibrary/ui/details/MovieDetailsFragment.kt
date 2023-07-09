@@ -1,11 +1,14 @@
 package com.ryanrvldo.movieslibrary.ui.details
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,7 +20,9 @@ import com.ryanrvldo.movieslibrary.BuildConfig
 import com.ryanrvldo.movieslibrary.R
 import com.ryanrvldo.movieslibrary.core.domain.model.Genre
 import com.ryanrvldo.movieslibrary.core.domain.model.MovieDetails
+import com.ryanrvldo.movieslibrary.core.domain.model.Video
 import com.ryanrvldo.movieslibrary.databinding.FragmentMovieDetailsBinding
+import com.ryanrvldo.movieslibrary.databinding.ItemTrailerBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -74,12 +79,55 @@ class MovieDetailsFragment : Fragment() {
         tvOverview.text = movieDetails.overview
         requireContext().imageLoader.enqueue(
             ImageRequest.Builder(requireContext())
-                .data(BuildConfig.TMDB_IMG_500_BASE_URL + movieDetails.posterPath)
+                .data(BuildConfig.TMDB_IMG_342_URL + movieDetails.posterPath)
                 .crossfade(true)
                 .error(R.drawable.baseline_broken_image_24)
                 .target(imgPoster)
                 .build()
         )
+        setupMovieTrailerVideos(movieDetails.videos)
+    }
+
+    private fun setupMovieTrailerVideos(videos: List<Video>) {
+        if (videos.isEmpty()) {
+            binding.lblTrailers.isVisible = false
+            binding.trailerScrollView.isVisible = false
+            return
+        }
+
+        binding.trailerLinearLayout.removeAllViews()
+        for (video in videos) {
+            val itemTrailerBinding = ItemTrailerBinding.inflate(
+                LayoutInflater.from(context),
+                binding.trailerLinearLayout,
+                false
+            )
+            itemTrailerBinding.tvTitle.text = video.name
+            context?.let {
+                it.imageLoader.enqueue(
+                    ImageRequest.Builder(it)
+                        .data(String.format(BuildConfig.YOUTUBE_THUMBNAIL_URL, video.key))
+                        .crossfade(true)
+                        .error(R.drawable.baseline_broken_image_24)
+                        .target(itemTrailerBinding.imgThumbnail)
+                        .build()
+                )
+                itemTrailerBinding.imgThumbnail.requestLayout()
+                itemTrailerBinding.imgThumbnail.setOnClickListener {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(
+                                String.format(
+                                    BuildConfig.YOUTUBE_VIDEO_URL, video.key
+                                )
+                            )
+                        )
+                    )
+                }
+            }
+            binding.trailerLinearLayout.addView(itemTrailerBinding.root)
+        }
     }
 
     private fun getRuntimeDuration(runtime: Int): String {

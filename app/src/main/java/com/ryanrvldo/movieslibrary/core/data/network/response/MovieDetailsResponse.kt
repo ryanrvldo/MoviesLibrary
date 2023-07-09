@@ -14,4 +14,5 @@ data class MovieDetailsResponse(
     @SerializedName("vote_count") val voteCount: Int,
     @SerializedName("genres") val genres: List<GenreResponse>,
     @SerializedName("runtime") val runtime: Int,
+    @SerializedName("videos") val videos: VideoListResponse
 )

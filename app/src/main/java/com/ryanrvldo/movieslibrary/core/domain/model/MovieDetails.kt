@@ -12,4 +12,5 @@ data class MovieDetails(
     val voteCount: Int,
     val genres: List<Genre>,
     val runtime: Int,
+    val videos: List<Video>
 )

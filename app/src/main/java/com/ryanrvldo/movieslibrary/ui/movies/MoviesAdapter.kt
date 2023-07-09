@@ -58,7 +58,7 @@ class MoviesAdapter @Inject constructor() :
             tvReleaseDate.text = item.releaseDate
             itemView.context.imageLoader.enqueue(
                 ImageRequest.Builder(itemView.context)
-                    .data(BuildConfig.TMDB_IMG_500_BASE_URL + item.backdropPath)
+                    .data(BuildConfig.TMDB_IMG_500_URL + item.backdropPath)
                     .crossfade(true)
                     .error(R.drawable.baseline_broken_image_24)
                     .target(imgBackdrop)

@@ -16,6 +16,9 @@ interface MovieService {
     ): PagingResponse<MovieResponse>
 
     @GET("movie/{movie_id}")
-    suspend fun getMovieDetailsById(@Path("movie_id") movieId: Int): MovieDetailsResponse
+    suspend fun getMovieDetailsById(
+        @Path("movie_id") movieId: Int,
+        @Query("append_to_response") appendToResponse: String = "videos"
+    ): MovieDetailsResponse
 
 }
