@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.ryanrvldo.movieslibrary.core.data.network.mapper.mapToDomain
 import com.ryanrvldo.movieslibrary.core.data.network.paging.buildPager
 import com.ryanrvldo.movieslibrary.core.data.network.response.MovieResponse
+import com.ryanrvldo.movieslibrary.core.data.network.response.ReviewResponse
 import com.ryanrvldo.movieslibrary.core.data.network.service.MovieService
 import com.ryanrvldo.movieslibrary.core.domain.model.MovieDetails
 import com.ryanrvldo.movieslibrary.core.domain.repository.MovieRepository
@@ -31,4 +32,11 @@ class MovieRepositoryImpl @Inject constructor(
             val response = movieService.getMovieDetailsById(id)
             response.mapToDomain()
         }
+
+    override fun getMovieReviews(movieId: Int) = buildPager { page ->
+        movieService.getMovieReviews(movieId, page)
+    }.flow
+        .flowOn(Dispatchers.IO)
+        .map { pagingData -> pagingData.map(ReviewResponse::mapToDomain) }
+
 }

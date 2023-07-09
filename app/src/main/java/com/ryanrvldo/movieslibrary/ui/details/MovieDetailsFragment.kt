@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.ryanrvldo.movieslibrary.BuildConfig
@@ -21,12 +22,14 @@ import com.ryanrvldo.movieslibrary.R
 import com.ryanrvldo.movieslibrary.core.domain.model.Genre
 import com.ryanrvldo.movieslibrary.core.domain.model.MovieDetails
 import com.ryanrvldo.movieslibrary.core.domain.model.Video
+import com.ryanrvldo.movieslibrary.core.util.DefaultLoadStateAdapter
 import com.ryanrvldo.movieslibrary.databinding.FragmentMovieDetailsBinding
 import com.ryanrvldo.movieslibrary.databinding.ItemTrailerBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
@@ -34,6 +37,12 @@ class MovieDetailsFragment : Fragment() {
     private var _binding: FragmentMovieDetailsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MovieDetailsViewModel by viewModels()
+
+    @Inject
+    lateinit var reviewPagingAdapter: MovieReviewsAdapter
+
+    @Inject
+    lateinit var loadStateAdapter: DefaultLoadStateAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,11 +55,16 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupReviewSection()
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { uiState ->
                     when (uiState) {
-                        is MovieDetailsUiState.Success -> renderData(uiState.movieDetails)
+                        is MovieDetailsUiState.Success -> {
+                            renderMovieData(uiState.movieDetails)
+                            reviewPagingAdapter.submitData(uiState.reviewPagingData)
+                        }
+
                         is MovieDetailsUiState.Error -> Toast.makeText(
                             context,
                             uiState.message,
@@ -69,7 +83,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun renderData(movieDetails: MovieDetails) = with(binding) {
+    private fun renderMovieData(movieDetails: MovieDetails) = with(binding) {
         tvTitle.text = movieDetails.title
         tvReleaseDate.text = movieDetails.releaseDate
         tvRuntime.text = getRuntimeDuration(movieDetails.runtime)
@@ -117,11 +131,7 @@ class MovieDetailsFragment : Fragment() {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse(
-                                String.format(
-                                    BuildConfig.YOUTUBE_VIDEO_URL, video.key
-                                )
-                            )
+                            Uri.parse(String.format(BuildConfig.YOUTUBE_VIDEO_URL, video.key))
                         )
                     )
                 }
@@ -134,6 +144,12 @@ class MovieDetailsFragment : Fragment() {
         val hour = runtime / 60
         val minute = runtime % 60
         return String.format(Locale.US, "%dh %02d min", hour, minute)
+    }
+
+    private fun setupReviewSection() {
+        loadStateAdapter.setOnRetry(reviewPagingAdapter::retry)
+        binding.rvReviews.layoutManager = LinearLayoutManager(context)
+        binding.rvReviews.adapter = reviewPagingAdapter.withLoadStateFooter(loadStateAdapter)
     }
 
     override fun onDestroyView() {

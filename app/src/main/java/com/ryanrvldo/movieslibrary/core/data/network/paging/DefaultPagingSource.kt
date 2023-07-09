@@ -15,7 +15,7 @@ internal class DefaultPagingSource<R : Any>(
             pageSize = 20,
             initialLoadSize = 40,
             maxSize = 50,
-            prefetchDistance = 5
+            prefetchDistance = 2
         )
     }
 
@@ -26,7 +26,7 @@ internal class DefaultPagingSource<R : Any>(
             LoadResult.Page(
                 data = response.results,
                 prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                nextKey = if (nextPageNumber == response.totalPages) null else nextPageNumber + 1
+                nextKey = if (nextPageNumber == response.totalPages || response.totalPages == 0) null else nextPageNumber + 1
             )
         } catch (exception: Exception) {
             // IOException for network failures.

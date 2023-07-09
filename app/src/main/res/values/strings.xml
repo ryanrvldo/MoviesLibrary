@@ -7,4 +7,6 @@
     <string name="title_retry">Retry</string>
     <string name="title_overview">Overview</string>
     <string name="title_trailers">Trailers</string>
+    <string name="lbl_review_date">Written on</string>
+    <string name="title_reviews">Reviews</string>
 </resources>
